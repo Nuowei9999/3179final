@@ -38,7 +38,7 @@
         "field": "new_tests_per_thousand",
         "type": "quantitative",
         "axis": {"grid": false},
-        "title":"new tests(per thousand)",
+        "title":"Total new tests(per thousand)",
         "scale": {"domain": [0, 2400]}
     },
     "y": {
@@ -50,7 +50,7 @@
     }, "color": {
           "field": "new_tests_per_thousand", 
           "type": "quantitative", 
-          "title":"new tests (per thousand)",
+          "title":"Total new tests (per thousand)",
           "scale": {"scheme": "blues","domain":[0,2000]}
       }
   },
