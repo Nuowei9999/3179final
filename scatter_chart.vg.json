@@ -1,0 +1,171 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 300,
+  "height": 300,
+  "background": "transparent",
+  "data": {
+    "url": "https://raw.githubusercontent.com/Nuowei9999/79A2/master/total%20case/data/data.csv"
+  },
+  "params": [
+      
+    {
+      "name": "Month_selection",
+      "value": 2,
+      "bind": {
+        "input": "range",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "name": "Month:  "
+      }
+    },
+    {
+      "name": "Population_Above",
+      "value": 0,
+      "bind": {
+        "input": "range",
+        "min": 0,
+        "max": 100000000,
+        "step": 1000000,
+        "name": "Minimum Population: "
+      }
+    },
+    {
+      "name": "Continent_selection",
+      "bind": {
+        "input": "select",
+        "options": [
+          null,
+          "North America",
+          "South America",
+          "Europe",
+          "Africa",
+          "Asia",
+          "Oceania"
+        ],
+        "labels": [
+          "Show All",
+          "North America",
+          "South America",
+          "Europe",
+          "Africa",
+          "Asia",
+          "Oceania"
+        ],
+        "name": "Continent Selection: "
+      }
+    }
+  ],
+  "transform": [
+    {"filter": "datum.month == Month_selection"},
+    {"filter": "datum.new_deaths_per_million > 0 || datum.new_deaths_per_million == 0 "},
+    {"filter": "datum.population > Population_Above"},
+    {
+      "filter": "Continent_selection == null || datum.continent == Continent_selection"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "new_deaths_per_million",
+      "type": "quantitative",
+      "title": "New deaths cases(per million)",
+      "axis": {"tickCount": 7,"grid": false},
+      "scale": {"type": "linear", "domain": [0, 800]}
+    },
+    "x": {
+      "field": "total_vaccinations_per_hundred",
+      "type": "quantitative",
+      "axis": {"tickCount": 6,"grid": false},
+      "title":"total vaccinations（per hundred）",
+      "scale": {"type": "linear", "domain": [0, 4000]}
+    }
+  },
+  "layer": [
+    {
+      "selection": {
+        "continent_highlight": {
+          "type": "multi",
+          "fields": ["continent"],
+          "bind": "legend"
+        }
+      },
+      "mark": "circle",
+      "encoding": {
+        "size": {
+          "field": "population",
+          "type": "quantitative",
+          "scale": {
+            "type": "threshold",
+            "domain": [1000000, 10000000, 50000000, 100000000, 500000000],
+            "range": [10, 50, 150, 200, 300, 400]
+          },
+          "legend": {"format": ".1s"}
+        },
+        "color": {
+          "field": "continent",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "North America",
+              "South America",
+              "Europe",
+              "Africa",
+              "Asia",
+              "Oceania"
+            ],
+            "range": [
+              "#e41a1c",
+              "#984ea3",
+              "#ff7f00",
+              "#a6cee3",
+              "#377eb8",
+              "#a65628"
+            ]
+          }
+        },
+        "opacity": {
+          "condition": {"selection": "continent_highlight", "value": 0.6},
+          "value": 0.2
+        },
+        "tooltip": [
+          {"field": "location", "type": "nominal","title":"Country"},
+          {"field": "new_deaths_per_million", "type": "quantitative", "format": ",","title":"New deaths(per million)"},
+          {"field": "total_vaccinations_per_hundred", "type": "quantitative", "format": ",","title":"total_ vaccinations (per hundred)"},
+          {"field": "gdp_per_capita", "type": "quantitative", "format": ",","title":"GDP (per capita)"}
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "line-bottom",
+        "dx": -12,
+        "fontSize": 10,
+        "fontStyle": "italic"
+      },
+      "encoding": {
+        "text": {"field": "location", "type": "nominal"},
+        "color": {"value": "black"},
+        "opacity": {
+          "condition": {
+            "test": "datum['location'] == 'China' || datum['location'] == 'United Arab Emirates' || datum['location'] == 'Australia' || datum['location'] == 'Israel' || datum['location'] == 'Peru' ||  datum['location'] == 'United States'",
+            "value": 1
+          },
+          "value": 0
+        },
+        "tooltip": [
+          {"field": "location", "type": "nominal","title":"Country"},
+          {"field": "new_deaths_per_million", "type": "quantitative", "format": ",","title":"New deaths(per million)"},
+          {"field": "total_vaccinations_per_hundred", "type": "quantitative", "format": ",","title":"total vaccinations (per hundred)"},
+          {"field": "gdp_per_capita", "type": "quantitative", "format": ",","title":"GDP (per capita)"}
+        ]
+      }
+    }
+  ],
+    "config": {"title": {"font": "sans-serif", "fontSize": 18},
+              "view": {
+                "stroke": "transparent"
+             }
+             }
+}

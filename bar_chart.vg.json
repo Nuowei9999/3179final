@@ -1,0 +1,75 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "background": "transparent",
+    "width": 300,
+  "height": 300,
+  "data": {
+    "url": "https://raw.githubusercontent.com/Nuowei9999/79A2/master/total%20case/data/test_data.csv"
+  },
+    "params": [
+      
+    {
+      "name": "Month_selection",
+      "value": 2,
+      "bind": {
+        "input": "range",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "name": "Month:  "
+      }}],
+  "transform": [
+    {"filter": "datum.month == Month_selection"},
+    {"calculate":"parseInt(datum.new_tests_per_thousand)", "as": "new_tests_per_thousand"},
+    {
+      "window": [{
+        "op": "rank",
+        "as": "rank"
+      }],
+      "sort": [{ "field": "new_tests_per_thousand", "order": "descending" }]
+    },     
+    {
+      "filter": "datum.rank <= 10"
+    }
+  ],
+  
+  "encoding": {
+    "x": {
+        "field": "new_tests_per_thousand",
+        "type": "quantitative",
+        "axis": {"grid": false},
+        "title":"new tests(per thousand)",
+        "scale": {"domain": [0, 2400]}
+    },
+    "y": {
+        "field": "location",
+        "title":"Country",
+        "type": "nominal",
+        "axis": {"grid": false},
+        "sort": "-x"
+    }, "color": {
+          "field": "new_tests_per_thousand", 
+          "type": "quantitative", 
+          "title":"new tests (per thousand)",
+          "scale": {"scheme": "blues","domain":[0,2000]}
+      }
+  },
+  "layer": [{
+  "mark": "bar"
+}, {
+  "mark": {
+    "type": "text",
+    "align": "left",
+    "baseline": "middle",
+    "dx": 3
+  },
+  "encoding": {
+    "text": {"field": "new_tests_per_thousand", "type": "quantitative"}
+  }
+}],
+  "config": {
+              "view": {
+                "stroke": "transparent"
+             }
+             }
+}
